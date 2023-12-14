@@ -94,11 +94,34 @@ class AbstractEncoder(nn.Module):
 
 
 class AbstractEmbModel(nn.Module):
-    def __init__(self):
+    def __init__(self, enable_lora_finetune=False, target_block=[], target_module=[]):
         super().__init__()
         self._is_trainable = None
         self._ucg_rate = None
         self._input_key = None
+        self.TARGET_BLOCK = target_block
+        self.TARGET_MODULE = target_module
+        if enable_lora_finetune:
+            self.lora_layers = []
+
+    def _enable_lora(self, lora_model):
+        for module_name, module in lora_model.named_modules():
+            if module.__class__.__name__ in self.TARGET_BLOCK:
+                tmp = {}
+                for sub_name, sub_module in module.named_modules():
+                    if sub_module.__class__.__name__ in self.TARGET_MODULE:
+                        if hasattr(sub_module, "input_size") and hasattr(sub_module, "output_size"): # for megatron ParallelLinear
+                            lora = LoraWrapper(sub_module, sub_module.input_size, sub_module.output_size)
+                        else: # for nn.Linear
+                            lora = LoraWrapper(sub_module, sub_module.in_features, sub_module.out_features)
+                        self.lora_layers.append(lora)
+                        if sub_name not in tmp.keys():
+                            tmp.update({sub_name: lora})
+                        else:
+                            print(f"Duplicate subnames are found in module {module_name}")
+                for sub_name, lora_layer in tmp.items():
+                    lora_name = f'{sub_name}_lora'
+                    module.add_module(lora_name, lora_layer)
 
     @property
     def is_trainable(self) -> bool:
@@ -550,7 +573,7 @@ class FrozenOpenCLIPEmbedder(AbstractEncoder):
 
 
 class FrozenMegatronCLIPEmbedder(AbstractEmbModel):
-    def __init__(self, restore_from_path, device="cuda", layer="last", freeze=True, cfg=None, always_return_pooled=False,):
+    def __init__(self, restore_from_path, device="cuda", layer="last", freeze=True, cfg=None, always_return_pooled=False,enable_lora_finetune=False):
         super().__init__(enable_lora_finetune=enable_lora_finetune,
                          target_block=["ParallelAttention", "ParallelMLP"],
                          target_module=["ColumnParallelLinear", "RowParallelLinear"])
