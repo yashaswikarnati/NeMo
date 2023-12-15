@@ -86,7 +86,7 @@ model:
   cond_stage_forward:
   text_embedding_dropout_rate: 0.1
   fused_opt: True
-  inductor: True
+  inductor: False
   inductor_cudagraphs: False
   capture_cudagraph_iters: -1 # -1 to disable
   channels_last: True
@@ -116,7 +116,7 @@ model:
     context_dim: 1024
     use_checkpoint: False
     legacy: False
-    use_flash_attention: False
+    use_flash_attention: True
 
   first_stage_config:
     _target_: nemo.collections.multimodal.models.stable_diffusion.ldm.autoencoder.AutoencoderKL
@@ -143,7 +143,7 @@ model:
 
   cond_stage_config:
     _target_: nemo.collections.multimodal.modules.stable_diffusion.encoders.modules.FrozenMegatronCLIPEmbedder
-    restore_from_path: /path/to/clip.nemo
+    restore_from_path: /ckpts/open_clip.nemo
     device: cuda
     freeze: True
     layer: "penultimate"
