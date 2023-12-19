@@ -1339,7 +1339,7 @@ class NLPSaveRestoreConnector(SaveRestoreConnector):
                 new_key = new_key.replace('ff.net.fc1_', 'ff.net.1.proj.')
                 new_key = new_key.replace('ff.net.fc2_', 'ff.net.3.')
 
-                new_state_dict[new_key] = checkpoint['state_dict'][key]
+                new_state_dict[new_key] = state_dict[key]
             state_dict = new_state_dict
 
         return state_dict
