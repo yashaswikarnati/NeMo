@@ -62,7 +62,7 @@ def main(cfg):
         model_cfg.first_stage_config.from_pretrained = None
         model_cfg.micro_batch_size = cfg.infer.batch_size
         model_cfg.global_batch_size = cfg.infer.batch_size * ntasks_per_node
-        model.unet_config.use_te_fp8=False
+        model_cfg.unet_config.use_te_fp8=False
 
     # Set up the trainer and model for inference
     trainer, megatron_diffusion_model = setup_trainer_and_model_for_inference(
