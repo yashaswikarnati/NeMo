@@ -4285,6 +4285,7 @@ jobs:
       - L2_Megatron_GPT_Embedding 
       - L2_Megatron_GPT_PEFT_Lora_PP2
       - L2_Megatron_GPT_PEFT_Lora_TP2
+      - L2_Megatron_GPT_PEFT_Lora_TP2SP1
       - L2_Megatron_GPT_Eval
       - L2_Megatron_GPT_Eval_PP2
       - L2_Megatron_GPT_SFT_Eval_inference_seq_len_greaterThan_training_seq_len
