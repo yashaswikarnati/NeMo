@@ -72,10 +72,10 @@ from nemo.core.optim import MainParamsOptimizerWrapper
 from nemo.core.optim.optimizers import init_optimizer_states
 from nemo.utils import AppState, logging
 from nemo.utils.model_utils import ckpt_to_dir, inject_model_parallel_rank, uninject_model_parallel_rank
+from megatron.training.global_vars import get_num_microbatches
+
 
 try:
-    from apex.transformer.pipeline_parallel.utils import get_num_microbatches
-
     from nemo.core.optim.distributed_adam import MegatronDistributedFusedAdam
     from nemo.core.optim.mcore_optim import McoreDistributedOptimizer
 

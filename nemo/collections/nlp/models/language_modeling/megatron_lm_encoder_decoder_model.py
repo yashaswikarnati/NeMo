@@ -46,18 +46,11 @@ from nemo.collections.nlp.modules.common.text_generation_utils import (
 from nemo.collections.nlp.parts.utils_funcs import get_last_rank
 from nemo.utils import AppState, logging
 
-try:
-    from apex.transformer.pipeline_parallel.utils import (
-        _reconfigure_microbatch_calculator,
-        get_micro_batch_size,
-        get_num_microbatches,
-    )
-
-    HAVE_APEX = True
-
-except (ImportError, ModuleNotFoundError):
-
-    HAVE_APEX = False
+from megatron.training.global_vars import (
+    _reconfigure_microbatch_calculator,
+    get_micro_batch_size,
+    get_num_microbatches,
+)
 
 try:
     from megatron.core import parallel_state, tensor_parallel

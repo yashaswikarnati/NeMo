@@ -19,10 +19,11 @@ import torch
 
 from nemo.utils import AppState, logging
 
+from megatron.training.global_vars import setup_microbatch_calculator
+from apex.training.microbatches import ConstantNumMicroBatches
+
 try:
     from apex.transformer.log_util import set_logging_level
-    from apex.transformer.microbatches import ConstantNumMicroBatches
-    from apex.transformer.pipeline_parallel.utils import setup_microbatch_calculator
 
     HAVE_APEX = True
 except (ImportError, ModuleNotFoundError):
@@ -136,7 +137,7 @@ def initialize_model_parallel_for_nemo(
 
     if global_batch_size and micro_batch_size is not None:
         # TODO: add rampup_batch_size here when we have it implemented
-        from apex.transformer.pipeline_parallel.utils import _GLOBAL_NUM_MICROBATCHES_CALCULATOR
+        from megatron.training.global_vars import _GLOBAL_NUM_MICROBATCHES_CALCULATOR
 
         if _GLOBAL_NUM_MICROBATCHES_CALCULATOR is None:
             setup_microbatch_calculator(

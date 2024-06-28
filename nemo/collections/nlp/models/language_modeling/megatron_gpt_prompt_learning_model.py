@@ -45,14 +45,7 @@ from nemo.collections.nlp.parts.nlp_overrides import GradScaler, NLPSaveRestoreC
 from nemo.collections.nlp.parts.utils_funcs import get_last_rank
 from nemo.utils import AppState, logging
 from nemo.utils.decorators import deprecated_warning
-
-try:
-    from apex.transformer.pipeline_parallel.utils import get_micro_batch_size, get_num_microbatches
-
-    HAVE_APEX = True
-
-except (ImportError, ModuleNotFoundError):
-    HAVE_APEX = False
+from megatron.training.global_vars import get_micro_batch_size, get_num_microbatches
 
 try:
     from megatron.core import InferenceParams, ModelParallelConfig, parallel_state, tensor_parallel

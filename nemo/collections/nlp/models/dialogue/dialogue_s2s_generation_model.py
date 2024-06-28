@@ -34,13 +34,7 @@ from nemo.core.classes.common import PretrainedModelInfo
 from nemo.utils import logging
 from nemo.utils.decorators import deprecated_warning
 
-try:
-    from apex.transformer.pipeline_parallel.utils import _reconfigure_microbatch_calculator
-
-    HAVE_APEX = True
-except:
-    HAVE_APEX = False
-
+from megatron.training.global_vars import _reconfigure_microbatch_calculator
 
 __all__ = ['DialogueS2SGenerationModel']
 

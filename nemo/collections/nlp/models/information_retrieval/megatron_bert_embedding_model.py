@@ -14,14 +14,7 @@
 
 import logging
 
-try:
-    from apex.transformer.pipeline_parallel.utils import get_num_microbatches
-
-    HAVE_APEX = True
-
-except (ImportError, ModuleNotFoundError):
-
-    HAVE_APEX = False
+from megatron.training.global_vars import get_num_microbatches
 
 try:
     from megatron.core import parallel_state

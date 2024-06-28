@@ -31,17 +31,12 @@ from nemo.collections.nlp.parts.mixins.nlp_adapter_mixins import NLPAdapterModel
 from nemo.collections.nlp.parts.utils_funcs import get_last_rank
 from nemo.utils import AppState, logging
 
-try:
-    from apex.transformer.pipeline_parallel.utils import (
-        _reconfigure_microbatch_calculator,
-        get_current_global_batch_size,
-        get_micro_batch_size,
-        get_num_microbatches,
-    )
-
-    HAVE_APEX = True
-except (ImportError, ModuleNotFoundError):
-    HAVE_APEX = False
+from megatron.training.global_vars import (
+    _reconfigure_microbatch_calculator,
+    get_current_global_batch_size,
+    get_micro_batch_size,
+    get_num_microbatches,
+)
 
 try:
     from megatron.core import parallel_state
@@ -60,10 +55,6 @@ class MegatronT5SFTModel(NLPAdapterModelMixin, MegatronT5Model):
     """ T5 Finetuning model in the same format as MegatronGPTSFTModel """
 
     def __init__(self, cfg: DictConfig, trainer: Trainer):
-        if not HAVE_APEX:
-            raise ImportError(
-                "Apex was not found. Please see the NeMo README for installation instructions: https://github.com/NVIDIA/NeMo#megatron-gpt."
-            )
         super().__init__(cfg, trainer=trainer)
         self.val_metric = self.test_metric = None
         if hasattr(self.cfg.data, "validation_ds"):

@@ -39,13 +39,7 @@ from nemo.collections.nlp.parts.nlp_overrides import GradScaler
 from nemo.utils import AppState, logging
 from nemo.utils.decorators import deprecated_warning
 
-try:
-    from apex.transformer.pipeline_parallel.utils import _reconfigure_microbatch_calculator
-
-    HAVE_APEX = True
-
-except (ImportError, ModuleNotFoundError):
-    HAVE_APEX = False
+from apex.transformer.pipeline_parallel.utils import _reconfigure_microbatch_calculator
 
 try:
     from megatron.core import ModelParallelConfig, parallel_state

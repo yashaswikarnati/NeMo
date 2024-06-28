@@ -26,15 +26,7 @@ from nemo.collections.nlp.data.language_modeling.t0_dataset import T0Dataset
 from nemo.collections.nlp.models.language_modeling.megatron_t5_sft_model import MegatronT5SFTModel
 from nemo.utils import AppState, logging
 
-try:
-    from apex.transformer.pipeline_parallel.utils import _reconfigure_microbatch_calculator
-
-    HAVE_APEX = True
-
-except (ImportError, ModuleNotFoundError):
-
-    HAVE_APEX = False
-
+from megatron.training.global_vars import _reconfigure_microbatch_calculator
 
 try:
     from megatron.core import parallel_state
