@@ -142,7 +142,7 @@ class ModelConnector(Connector, Generic[SourceT, TargetT]):
             devices=1, accelerator="cpu", strategy=MegatronStrategy(store_optimizer_states=False, ddp="pytorch")
         )
 
-        _trainer.strategy.connect(model)
+        _trainer.strategy.connect(model, check_optimizer=False)
         _trainer.strategy.setup_environment()
 
         if not model.state_dict():

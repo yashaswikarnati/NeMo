@@ -143,7 +143,7 @@ class MegatronStrategy(DDPStrategy, io.IOMixin):
         _strategy_lib.enable_nvidia_optimizations()
 
     @override
-    def connect(self, model: pl.LightningModule) -> None:
+    def connect(self, model: pl.LightningModule, check_optimizer=True) -> None:
         super().connect(model)
 
         # Right now mcore sub-classes ModelParellelConfig, we should remove that
@@ -165,7 +165,7 @@ class MegatronStrategy(DDPStrategy, io.IOMixin):
             self._mcore_config = config
 
         has_optim = getattr(model, "optim", None)
-        if has_optim:
+        if check_optimizer and has_optim:
             opt_config = getattr(model.optim, "config", None)
             if isinstance(opt_config, OptimizerConfig):
                 mcore_opt_config: OptimizerConfig = cast(OptimizerConfig, opt_config)
