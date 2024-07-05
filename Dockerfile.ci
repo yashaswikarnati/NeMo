@@ -46,8 +46,6 @@ RUN \
 --mount=type=bind,source=nemo/package_info.py,target=nemo/package_info.py \
 --mount=type=bind,source=nemo/__init__.py,target=nemo/__init__.py <<"EOF" bash -ex
 pip install --no-cache-dir --no-build-isolation --extra-index-url https://pypi.nvidia.com \
-"transformer-engine @ git+https://github.com/NVIDIA/TransformerEngine.git@${TE_TAG}" \
-"megatron_core @ git+https://github.com/NVIDIA/Megatron-LM.git@${MCORE_TAG}" \
 "nvidia-modelopt[torch]~=${MODELOPT_VERSION}" \
 "apex @ git+https://github.com/NVIDIA/apex.git@${APEX_TAG}" \
 "llama-index==0.10.43" \
@@ -65,6 +63,16 @@ git cherry-pick 38d05361f51012826ee8cfad7227f5a07a0ed66b && \
   popd && \
 popd
 export PYTHONPATH="${PYTHONPATH}:/workspace/Megatron-LM"
+
+# TE installation
+git clone https://github.com/NVIDIA/TransformerEngine.git && \
+pushd TransformerEngine && \
+git submodule init && git submodule update && \
+echo TE_REVISION=${TE_TAG} && \
+git checkout ${TE_TAG} && \
+echo TE_COMMIT_HASH=$(git rev-parse HEAD) && \
+NVTE_FRAMEWORK=pytorch NVTE_WITH_USERBUFFERS=1 MPI_HOME=/usr/local/mpi pip install --force-reinstall --no-deps . && \
+popd
 EOF
 
 # Copy over NeMo code
