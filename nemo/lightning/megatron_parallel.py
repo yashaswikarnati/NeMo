@@ -128,6 +128,7 @@ class MegatronParallel(nn.ModuleList, Generic[ModelT]):
         ddp_config: Optional[DistributedDataParallelConfig] = None,
         cpu: bool = False,
         convert_module_fn: Optional[Callable[[ModelT], nn.Module]] = None,
+        freeze: bool = False
     ) -> None:
         from apex.transformer.tensor_parallel.layers import set_defaults_if_not_set_tensor_model_parallel_attributes
         from megatron.core import parallel_state
@@ -155,7 +156,15 @@ class MegatronParallel(nn.ModuleList, Generic[ModelT]):
         if convert_module_fn:
             for i in range(len(_pipeline)):
                 _pipeline[i] = convert_module_fn(_pipeline[i])
-
+                
+        if freeze:
+            from nemo.utils import logging
+            
+            logging.info("Freezing model")
+            for model in _pipeline:
+                for param in model.parameters():
+                    param.requires_grad = False
+        
         if isinstance(ddp_config, DistributedDataParallelConfig):
             for model_chunk_idx, model_chunk in enumerate(_pipeline):
                 module = model_chunk.module
@@ -182,7 +191,7 @@ class MegatronParallel(nn.ModuleList, Generic[ModelT]):
 
         for i, model_module in enumerate(_pipeline):
             if not cpu:
-                model_module.cuda(torch.cuda.current_device(), non_blocking=True)
+                model_module.cuda(torch.cuda.current_device())
 
             for param in model_module.parameters():
                 set_defaults_if_not_set_tensor_model_parallel_attributes(param)
