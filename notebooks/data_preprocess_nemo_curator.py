@@ -28,12 +28,7 @@ def pre_imports():
 
 class TextFilter(DocumentModifier):
     def modify_document(self, text: str) -> str:
-        text = text.replace("‘", "'").replace("’", "'")
-        text = text.replace("“", '"').replace("”", '"')
-        text = text.replace("\n", " ")
         text = text.replace("§", "")
-        text = re.sub(r'\b(?<![\d-])(\d{1,2})(?![\d-])\b', '', text) #numbered bullet points but dont remove useful numbers
-        text = re.sub(r'[^\w\s\-\./:,\'"]', '', text) #back slashes
         text = re.sub(r'\s+', ' ', text).strip()
         return text
 def clean_and_unify(dataset: DocumentDataset) -> DocumentDataset:
@@ -50,22 +45,20 @@ def redact_pii(dataset: DocumentDataset) -> DocumentDataset:
         PiiModifier(
             supported_entities=["EMAIL_ADDRESS"],
             anonymize_action="replace",
-            device="cpu",
+            device="gpu",
         ),
     )
     return redactor(dataset)
 
 def main(args):
-    # cluster = LocalCluster(n_workers=5, processes=True, memory_limit='16GB')
-    # client = Client(cluster)
     print(args)
     client = get_client(**ArgumentHelper.parse_client_args(args))
     backend = "cudf" if args.device == "gpu" else "pandas"
 
     if args.device == "gpu":
         client.run(pre_imports)
-    data_dir = '/home/ykarnati/Downloads/tempdaata/legal-mc4/train/'
-    output_dir = '/home/ykarnati/Downloads/tempdaata/legal-mc4/train/new_process'
+    data_dir = '/home/ykarnati/Downloads/shards'
+    output_dir = '/home/ykarnati/Downloads/shards/processed'
     os.makedirs(os.path.dirname(output_dir), exist_ok=True)
     all_files = glob.glob(f"{data_dir}/*.jsonl")
     print(f"all_+files {all_files}")
@@ -76,8 +69,8 @@ def main(args):
     curation_steps = Sequential(
         [
             clean_and_unify,
-            redact_pii,
             filter_pipeline
+            # redact_pii,
         ]
     )
     input_dataset = curation_steps(input_dataset)
