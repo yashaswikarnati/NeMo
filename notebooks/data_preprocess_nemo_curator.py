@@ -57,8 +57,8 @@ def main(args):
 
     if args.device == "gpu":
         client.run(pre_imports)
-    data_dir = '/home/ykarnati/Downloads/shards'
-    output_dir = '/home/ykarnati/Downloads/shards/processed'
+    data_dir = f'/home/ykarnati/Downloads/shards'
+    output_dir = f"{data_dir}/processed"
     os.makedirs(os.path.dirname(output_dir), exist_ok=True)
     all_files = glob.glob(f"{data_dir}/*.jsonl")
     print(f"all_+files {all_files}")
