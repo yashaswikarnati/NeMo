@@ -38,10 +38,6 @@ filters:
   - name: nemo_curator.filters.heuristic_filter.RepeatedParagraphsByCharFilter
     params:
       max_repeated_paragraphs_char_ratio: 0.8
-  # - name: nemo_curator.filters.heuristic_filter.WordCountFilter
-  #   params:
-  #     min_words: 50
-  #     max_words: 100000
   - name: nemo_curator.filters.heuristic_filter.PunctuationFilter
     params:
       max_num_sentences_without_endmark_ratio: 0.85
@@ -96,7 +92,6 @@ filters:
     params:
       n: 9
       max_repeating_duplicate_ngram_ratio: 0.1
-      1
   - name: nemo_curator.filters.heuristic_filter.RepeatingDuplicateNGramsFilter
     params:
       n: 10

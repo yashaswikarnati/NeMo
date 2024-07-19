@@ -29,7 +29,6 @@ def pre_imports():
 class TextFilter(DocumentModifier):
     def modify_document(self, text: str) -> str:
         text = text.replace("§", "")
-        text = re.sub(r'\s+', ' ', text).strip()
         return text
 def clean_and_unify(dataset: DocumentDataset) -> DocumentDataset:
     cleaners = Sequential(
