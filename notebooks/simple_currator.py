@@ -122,8 +122,6 @@ def run_curation_pipeline(args: Any, jsonl_dir: str) -> None:
         [
             clean_and_unify,
             filter_dataset,
-            dedupe,
-            redact_pii,
         ]
     )
     dataset = curation_steps(dataset)
