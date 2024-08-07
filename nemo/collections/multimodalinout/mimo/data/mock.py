@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytorch_lightning as pl
 from typing import TYPE_CHECKING, Dict, List, Optional
+
 import numpy as np
+import pytorch_lightning as pl
 import torch
 from torch.utils.data import DataLoader, Dataset
 
@@ -27,4 +28,3 @@ class MockMultiModalDataModule(pl.LightningDataModule):
 class _MockMultiModalDataset(Dataset):
     def __init__(self):
         super().__init__()
-
